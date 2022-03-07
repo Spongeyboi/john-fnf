@@ -282,9 +282,27 @@ class TitleState extends MusicBeatState
 
 			new FlxTimer().start(2, function(tmr:FlxTimer)
 			{
-				FlxG.switchState(new MainMenuState());
-				// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
-			}
+
+				// Get current version of Jade Engine
+				trace('Checking for updates');
+
+				var http = new haxe.Http("https://raw.githubusercontent.com/Spongeyboi/Jade-Engine/master/version.downloadMe");
+				var returnedData:Array<String> = [];
+
+				http.onData = function(data:String)
+				{
+					FlxG.switchState(new MainMenuState());
+				}
+				
+				http.onError = function (error) {
+				  trace('Error checking for update due to: $error\nHeading to the title');
+				  FlxG.switchState(new MainMenuState()); // fail but we go anyway
+				}
+				
+				http.request();
+
+			});
+			// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 		}
 
 		if (pressedEnter && !skippedIntro)
